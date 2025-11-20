@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import type { RescueRequest } from "@/types/rescue-request";
 
@@ -26,6 +27,11 @@ export default function RequestsPage() {
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
   const [state, setState] = useState<FetchState>("idle");
   const [error, setError] = useState<string | null>(null);
+  const [notePreview, setNotePreview] = useState<{
+    name: string;
+    content: string;
+    createdAt: string;
+  } | null>(null);
 
   const fetchRequests = useMemo(
     () => async () => {
@@ -75,6 +81,14 @@ export default function RequestsPage() {
           Lọc theo tình trạng, sắp xếp theo thời gian hoặc tên, tìm nhanh bằng
           số điện thoại.
         </p>
+        <div className="mt-4 flex flex-wrap gap-3">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-blue-200 hover:text-blue-600"
+          >
+            ← Quay về trang cầu cứu
+          </Link>
+        </div>
       </header>
 
       <section className="grid gap-4 rounded-3xl border border-white/70 bg-white/95 p-6 shadow-lg shadow-blue-900/5 backdrop-blur-xl lg:grid-cols-4">
@@ -146,13 +160,19 @@ export default function RequestsPage() {
             Chưa có tín hiệu nào phù hợp.
           </div>
         ) : (
-          <div className="overflow-x-auto">
+          <>
+            <div className="mb-2 flex items-center gap-2 rounded-2xl border border-dashed border-slate-200 bg-slate-50/80 px-3 py-2 text-xs text-slate-500 sm:hidden">
+              <span className="text-base">⇆</span>
+              <span>Vuốt ngang bảng để xem đầy đủ thông tin.</span>
+            </div>
+            <div className="overflow-x-auto">
             <table className="w-full min-w-[720px] border-separate border-spacing-0 text-sm text-slate-600">
               <thead>
                 <tr className="text-left text-xs uppercase tracking-wide text-slate-400">
                   <th className="border-b border-slate-100 px-6 py-3">Thời gian</th>
                   <th className="border-b border-slate-100 px-6 py-3">Người cầu cứu</th>
                   <th className="border-b border-slate-100 px-6 py-3">Liên hệ</th>
+                  <th className="border-b border-slate-100 px-6 py-3">Địa chỉ / mô tả</th>
                   <th className="border-b border-slate-100 px-6 py-3">Tình trạng</th>
                   <th className="border-b border-slate-100 px-6 py-3">Toạ độ</th>
                   <th className="border-b border-slate-100 px-6 py-3">Ghi chú</th>
@@ -169,10 +189,13 @@ export default function RequestsPage() {
                     <td className="px-6 py-4">
                       <p className="font-semibold text-slate-900">{request.full_name}</p>
                       {request.manual_override ? (
-                        <p className="text-xs text-amber-600">Đặt thủ công</p>
+                        <p className="text-xs text-amber-600">Đặt toạ độ thủ công</p>
                       ) : null}
                     </td>
                     <td className="px-6 py-4">{request.phone_number}</td>
+                    <td className="px-6 py-4 text-xs text-slate-600">
+                      {request.address ?? "—"}
+                    </td>
                     <td className="px-6 py-4">
                       <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
                         {request.status}
@@ -195,15 +218,62 @@ export default function RequestsPage() {
                       ) : null}
                     </td>
                     <td className="px-6 py-4 text-xs text-slate-500">
-                      {request.notes ?? "—"}
+                      {request.notes ? (
+                        <button
+                          onClick={() =>
+                            setNotePreview({
+                              name: request.full_name,
+                              content: request.notes ?? "",
+                              createdAt: request.created_at,
+                            })
+                          }
+                          className="rounded-full border border-slate-200 px-3 py-1 text-[11px] font-semibold text-slate-600 transition hover:border-blue-200 hover:text-blue-600"
+                        >
+                          Xem ghi chú
+                        </button>
+                      ) : (
+                        "—"
+                      )}
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
+          </>
         )}
       </section>
+
+      {notePreview && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 px-4 py-6 backdrop-blur-sm">
+          <div className="w-full max-w-lg rounded-3xl border border-white/70 bg-white/95 p-6 shadow-2xl shadow-blue-900/20">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-xs uppercase tracking-wide text-blue-500">
+                  Ghi chú chi tiết
+                </p>
+                <h3 className="mt-1 text-xl font-semibold text-slate-900">
+                  {notePreview.name}
+                </h3>
+                <p className="text-xs text-slate-400">
+                  {new Date(notePreview.createdAt).toLocaleString("vi-VN", {
+                    hour12: false,
+                  })}
+                </p>
+              </div>
+              <button
+                onClick={() => setNotePreview(null)}
+                className="rounded-full border border-slate-200 px-3 py-1 text-sm font-semibold text-slate-500 transition hover:border-blue-200 hover:text-blue-600"
+              >
+                Đóng
+              </button>
+            </div>
+            <div className="mt-4 rounded-2xl border border-slate-100 bg-slate-50/80 p-4 text-sm leading-relaxed text-slate-700">
+              {notePreview.content}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

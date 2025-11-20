@@ -7,6 +7,7 @@ export type RescueRequest = {
   phone_number: string;
   status: string;
   notes: string | null;
+  address: string | null;
   latitude: number | null;
   longitude: number | null;
   accuracy: number | null;
@@ -19,6 +20,7 @@ export type RescueRequestPayload = {
   phoneNumber: string;
   status: string;
   notes?: string;
+  address?: string;
   coords?: Coords | null;
   accuracy?: number | null;
   manualOverride?: boolean;

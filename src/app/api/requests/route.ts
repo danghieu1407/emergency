@@ -13,6 +13,7 @@ function normalizeSort(sortBy?: string) {
     "status",
     "full_name",
     "phone_number",
+    "address",
   ]);
   if (!sortBy || !allowed.has(sortBy)) {
     return "created_at";
@@ -42,7 +43,7 @@ export async function GET(request: Request) {
 
   if (search) {
     query = query.or(
-      `full_name.ilike.%${search}%,phone_number.ilike.%${search}%`,
+      `full_name.ilike.%${search}%,phone_number.ilike.%${search}%,address.ilike.%${search}%`,
     );
   }
 
@@ -79,6 +80,7 @@ export async function POST(request: Request) {
       phone_number: body.phoneNumber,
       status: body.status,
       notes: body.notes ?? null,
+      address: body.address ?? null,
       latitude: body.coords?.lat ?? null,
       longitude: body.coords?.lng ?? null,
       accuracy: body.accuracy ?? null,
