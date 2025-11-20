@@ -14,7 +14,7 @@ Webapp Next.js giúp người dân gửi tín hiệu cầu cứu kèm toạ đ�
      id uuid primary key default gen_random_uuid(),
      created_at timestamptz default now(),
      full_name text not null,
-     phone_number text not null,
+  phone_number text,
      status text not null,
      notes text,
   address text,
@@ -43,7 +43,7 @@ Truy cập `http://localhost:3000` để mở giao diện người dân gửi c�
 
 ### 3. Tính năng chính
 
-- **Gửi cầu cứu:** nhập họ tên, số điện thoại, tình trạng, mô tả; hệ thống tự xác định GPS (có thể chạm lên bản đồ hoặc nhập địa chỉ để đặt thủ công).
+- **Gửi cầu cứu:** nhập họ tên (bắt buộc), số điện thoại (tuỳ chọn), tình trạng, mô tả; hệ thống tự xác định GPS (có thể chạm lên bản đồ hoặc nhập địa chỉ để đặt thủ công).
 - **Lưu vào database:** khi bấm “Lưu & chia sẻ”, dữ liệu được lưu vào bảng `rescue_requests` rồi kích hoạt Web Share API (hoặc sao chép nội dung).
 - **Bản đồ tương tác:** hiển thị marker và vòng tròn sai số; cho phép chọn lại vị trí nếu GPS chưa chính xác.
 - **Danh sách cứu hộ:** trang `/requests` hiển thị bảng có tìm kiếm, lọc tình trạng, sắp xếp, liên kết mở Google Maps, kèm địa chỉ mô tả.

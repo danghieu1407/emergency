@@ -192,6 +192,9 @@ export default function Home() {
       return "Điền họ tên và số điện thoại để tạo nội dung cầu cứu.";
     }
 
+    const phoneLine = formData.phoneNumber
+      ? `SĐT: ${formData.phoneNumber}.`
+      : "Chưa cung cấp SĐT.";
     const statusLine = formData.status
       ? `Tình trạng: ${formData.status}.`
       : "Tình trạng: chưa chọn.";
@@ -207,7 +210,7 @@ export default function Home() {
       ? `Chi tiết: ${formData.notes}.`
       : "Chưa có mô tả thêm.";
 
-    return `Tôi là ${formData.fullName} (${formData.phoneNumber}). ${statusLine} ${addressLine} ${locationLine} ${notesLine}`;
+    return `Tôi là ${formData.fullName}. ${phoneLine} ${statusLine} ${addressLine} ${locationLine} ${notesLine}`;
   }, [accuracy, coords, formData]);
 
   const handleCopyLocation = async () => {
@@ -227,8 +230,8 @@ export default function Home() {
   };
 
   const submitRequest = useCallback(async (): Promise<RescueRequest | null> => {
-    if (!formData.fullName || !formData.phoneNumber || !formData.status) {
-      showFeedback("Vui lòng điền họ tên, số điện thoại và tình trạng.", "error");
+    if (!formData.fullName || !formData.status) {
+      showFeedback("Vui lòng điền họ tên và tình trạng.", "error");
       return null;
     }
 
@@ -241,7 +244,7 @@ export default function Home() {
         },
         body: JSON.stringify({
           fullName: formData.fullName,
-          phoneNumber: formData.phoneNumber,
+          phoneNumber: formData.phoneNumber.trim() || undefined,
           status: formData.status,
           notes: formData.notes,
           address: formData.address || null,
@@ -451,7 +454,7 @@ export default function Home() {
               />
             </label>
             <label className="flex flex-col gap-2 text-sm font-semibold text-slate-800">
-              Số điện thoại
+              Số điện thoại (tuỳ chọn)
               <input
                 value={formData.phoneNumber}
                 onChange={(e) =>
@@ -461,6 +464,9 @@ export default function Home() {
                 placeholder="VD: 0912345678"
                 className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-base font-normal text-slate-900 outline-none transition focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-100"
               />
+              <span className="text-xs font-normal text-slate-500">
+                Có thể bỏ trống nếu chỉ thu thập toạ độ hoặc địa chỉ.
+              </span>
             </label>
             <div className="flex flex-col gap-2 text-sm font-semibold text-slate-800">
               Địa chỉ (nếu người thân báo cáo hộ)

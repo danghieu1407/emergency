@@ -192,7 +192,13 @@ export default function RequestsPage() {
                         <p className="text-xs text-amber-600">Đặt toạ độ thủ công</p>
                       ) : null}
                     </td>
-                    <td className="px-6 py-4">{request.phone_number}</td>
+                    <td className="px-6 py-4">
+                      {request.phone_number ?? (
+                        <span className="text-xs text-slate-400">
+                          Không có SĐT
+                        </span>
+                      )}
+                    </td>
                     <td className="px-6 py-4 text-xs text-slate-600">
                       {request.address ?? "—"}
                     </td>

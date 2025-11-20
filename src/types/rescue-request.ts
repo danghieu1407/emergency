@@ -4,7 +4,7 @@ export type RescueRequest = {
   id: string;
   created_at: string;
   full_name: string;
-  phone_number: string;
+  phone_number: string | null;
   status: string;
   notes: string | null;
   address: string | null;
@@ -17,7 +17,7 @@ export type RescueRequest = {
 
 export type RescueRequestPayload = {
   fullName: string;
-  phoneNumber: string;
+  phoneNumber?: string;
   status: string;
   notes?: string;
   address?: string;

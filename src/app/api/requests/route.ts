@@ -64,9 +64,9 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   const body = (await request.json()) as RescueRequestPayload;
 
-  if (!body.fullName || !body.phoneNumber || !body.status) {
+  if (!body.fullName || !body.status) {
     return NextResponse.json(
-      { error: "Thiếu họ tên, số điện thoại hoặc tình trạng." },
+      { error: "Thiếu họ tên hoặc tình trạng." },
       {
         status: 400,
       },
@@ -77,7 +77,7 @@ export async function POST(request: Request) {
     .from(TABLE_NAME)
     .insert({
       full_name: body.fullName,
-      phone_number: body.phoneNumber,
+      phone_number: body.phoneNumber ?? null,
       status: body.status,
       notes: body.notes ?? null,
       address: body.address ?? null,
